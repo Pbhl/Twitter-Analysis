@@ -25,3 +25,23 @@ class SentimentScore:
         return [w for w in tweet if not w in stopset]  
     def read_words(self,words_file):
         return [word for line in open(words_file, 'r', encoding="utf8") for word in line.split()]
+    def sentence_score(self,tweet):
+        score = 0
+        for w in tweet:
+            if w in self.pos:
+                score+= 1
+            elif w in self.neg:
+                score-= 1
+        try:
+            score = score/len(tweet)
+        except ZeroDivisionError:
+            score = 0
+        return score
+    def score(self):
+        self.tweet_text = self.tweet_text.apply(self.remove_stopwords_feat) # remove stopwords
+        sent_score = []
+        fin_score = 0
+        for index, tweet in self.tweet_text.iteritems():
+            sent_score.append(self.sentence_score(tweet))
+        fin_score = sum(sent_score)/len(sent_score)
+        print("The sentiment score is {}".format(fin_score))

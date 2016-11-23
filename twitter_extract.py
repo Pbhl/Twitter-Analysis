@@ -47,3 +47,26 @@ class TwitterDataCollect:
         # trim
         tweet = tweet.strip('\'"')
         return tweet
+    def get_data(self, screen_name):
+        alltweets = [] 
+        #get first 200 tweets
+        new_tweets = self.api.get_user_timeline(
+            screen_name=screen_name, count=200)
+        alltweets.extend(new_tweets)
+        #get id for last tweet but 1
+        oldest = alltweets[-1]['id'] - 1
+        while len(new_tweets) > 0:
+            # all subsiquent requests use the max_id param to prevent duplicates
+            new_tweets = self.api.get_user_timeline(
+                screen_name=screen_name, count=200, max_id=oldest)
+            # save most recent tweets
+            alltweets.extend(new_tweets)
+            # update the id of the oldest tweet but 1
+            oldest = alltweets[-1]['id'] - 1
+            #write tweets to csv
+        tweets_df = pd.DataFrame(alltweets)
+        tweets_df = tweets_df[['text','in_reply_to_screen_name']]
+        tweets_df['text'] = tweets_df['text'].apply(self.process_tweet)
+        fc = open(screen_name+'_tweets.csv', 'w+', newline='', encoding='utf-8')
+        #tweets_df.to_csv(fc, encoding='utf-8')  
+        tweets_df.to_csv(fc) 

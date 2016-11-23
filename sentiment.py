@@ -18,3 +18,10 @@ class SentimentScore:
         neg_emot="C:\\Users\\parth\\Desktop\\Twitter_nongit\\Twitter\\negative-emot.txt"
         self.pos=self.read_words(pos_file) + self.read_words(pos_emot)
         self.neg=self.read_words(neg_file) + self.read_words(neg_emot)
+    def remove_stopwords_feat(self,tweet):
+        stopset = set(stopwords.words('english'))
+        stopset.add('rt')
+        #return dict([(tweet, True) for word in tweet if word not in stopset])
+        return [w for w in tweet if not w in stopset]  
+    def read_words(self,words_file):
+        return [word for line in open(words_file, 'r', encoding="utf8") for word in line.split()]

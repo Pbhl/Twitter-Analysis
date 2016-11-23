@@ -20,6 +20,10 @@ class TwitterDataCollect:
                            app_secret=TWITTER_APP_KEY_SECRET,
                            oauth_token=TWITTER_ACCESS_TOKEN,
                            oauth_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
+        #get emoticon list to avoid deletion
+        pos_emot = "C:\\Users\\parth\\Desktop\\Twitter_nongit\\Twitter\\positive-emot.txt"
+        neg_emot = "C:\\Users\\parth\\Desktop\\Twitter_nongit\\Twitter\\negative-emot.txt"
+        self.emot = self.read_words(neg_emot) + self.read_words(pos_emot)
      def read_words(self,words_file):
             return [word for line in open(words_file, 'r', encoding="utf8") for word in line.split()]  
      def strip_non_ascii(self, txt):
